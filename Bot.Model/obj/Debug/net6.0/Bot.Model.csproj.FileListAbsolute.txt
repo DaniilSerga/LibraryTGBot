@@ -1,0 +1,14 @@
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\bin\Debug\net6.0\Bot.Model.deps.json
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\bin\Debug\net6.0\Bot.Model.runtimeconfig.json
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\bin\Debug\net6.0\Bot.Model.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\bin\Debug\net6.0\Bot.Model.pdb
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.csproj.AssemblyReference.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.AssemblyInfoInputs.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.AssemblyInfo.cs
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.csproj.CoreCompileInputs.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\refint\Bot.Model.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.pdb
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\Bot.Model.genruntimeconfig.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.Model\obj\Debug\net6.0\ref\Bot.Model.dll

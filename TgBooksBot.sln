@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TgBooksBot", "TgBooksBot\TgBooksBot.csproj", "{C11A5D8D-7050-4B1C-9FB0-BF3499D5D924}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Api", "1. Api", "{7257ED05-0E0D-47E1-87B6-72F3CA469F5B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Business logic", "2. Business logic", "{7FF2F500-E10B-4331-ABC0-28F4E66D9BC4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Model", "3. Model", "{31EE31FA-685A-4340-B55E-95E33DC89C17}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Parser", "4. Parser", "{057960FC-D61F-4F79-96A8-AEBFC89FBF49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.BusinessLogic", "Bot.BusinessLogic\Bot.BusinessLogic.csproj", "{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Model", "Bot.Model\Bot.Model.csproj", "{FEDF2E93-9B22-4419-8ABB-5DD9F528D089}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Parser", "Bot.Parser\Bot.Parser.csproj", "{73F51C63-D253-4787-90B0-E7B3527918E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C11A5D8D-7050-4B1C-9FB0-BF3499D5D924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C11A5D8D-7050-4B1C-9FB0-BF3499D5D924}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C11A5D8D-7050-4B1C-9FB0-BF3499D5D924}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C11A5D8D-7050-4B1C-9FB0-BF3499D5D924}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEDF2E93-9B22-4419-8ABB-5DD9F528D089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEDF2E93-9B22-4419-8ABB-5DD9F528D089}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEDF2E93-9B22-4419-8ABB-5DD9F528D089}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEDF2E93-9B22-4419-8ABB-5DD9F528D089}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73F51C63-D253-4787-90B0-E7B3527918E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73F51C63-D253-4787-90B0-E7B3527918E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73F51C63-D253-4787-90B0-E7B3527918E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73F51C63-D253-4787-90B0-E7B3527918E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C11A5D8D-7050-4B1C-9FB0-BF3499D5D924} = {7257ED05-0E0D-47E1-87B6-72F3CA469F5B}
+		{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0} = {7FF2F500-E10B-4331-ABC0-28F4E66D9BC4}
+		{FEDF2E93-9B22-4419-8ABB-5DD9F528D089} = {31EE31FA-685A-4340-B55E-95E33DC89C17}
+		{73F51C63-D253-4787-90B0-E7B3527918E4} = {057960FC-D61F-4F79-96A8-AEBFC89FBF49}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A426C1B-EBF8-4677-AFCF-206BAB18C9BF}
+	EndGlobalSection
+EndGlobal
