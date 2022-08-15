@@ -5,11 +5,7 @@ namespace Bot.Model
 {
     public class ApplicationContext : DbContext
     {
-        #region Properties
-        public DbSet<Author> Authors { get; set; } = null!;
-        public DbSet<Genre> Genres { get; set; } = null!;
         public DbSet<Book> Books { get; set; } = null!;
-        #endregion
 
         public ApplicationContext()
         {
