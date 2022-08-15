@@ -1,9 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
+using Bot.Model.DatabaseModels;
 using Bot.Model;
-// var nodes = htmlDoc.DocumentNode.SelectNodes(".//a[@class='art__name__href']");
-// List<string> booksTitles = new List<string>();
-// foreach (HtmlNode item in nodes_2) - booksAuthors.Add(item.InnerText);
 
 HtmlWeb web = new();
 var htmlDoc = await web.LoadFromWebAsync(@"https://fb2-epub.ru/");
@@ -13,7 +11,7 @@ var nodes_2 = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'entry__
 var nodes_3 = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'entry__info-wrapper')]");
 
 // FIX BUG with href
-var nodes_4 = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'entry__info-download')]");
+var nodes_4 = htmlDoc.DocumentNode.SelectNodes(".//a[contains(@class, 'entry__info-download')]");
 
 List<string> booksTitles = new();
 List<string> booksAuthors = new();
@@ -40,13 +38,13 @@ foreach (HtmlNode node in nodes_3)
 }
 foreach (HtmlNode node in nodes_4)
 {
-    booksLinks.Add(node.InnerText);
+    booksLinks.Add(node.Attributes["href"].Value);
 }
 
 for (int i = 0; i < booksTitles.Count; i++)
 {
     Console.WriteLine($"{booksGenres[i]}. {booksTitles[i]} - {booksAuthors[i]}");
     Console.WriteLine(booksDescriptions[i]);
-    Console.WriteLine("Ссылка: " + booksLinks[i]);
+    Console.WriteLine("Ссылка: " + booksLinks[i] + "\n");
 }
 
