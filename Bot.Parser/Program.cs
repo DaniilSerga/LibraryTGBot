@@ -3,10 +3,15 @@ using System;
 using Bot.Model.DatabaseModels;
 using Bot.Model;
 
-await Task.Run(GetBooksFromSite);
+List<Book> books = await Task.Run(GetBooksFromSite);
 
-async Task GetBooksFromSite()
+await PushToDataBase(books);
+
+#region Methods
+async Task<List<Book>> GetBooksFromSite()
 {
+    Console.WriteLine("Loading...");
+
     List<Book> books = new();
 
     // TODO There's a bug which is about books named in english and somehow about books which contain '...' in their title
@@ -21,8 +26,6 @@ async Task GetBooksFromSite()
             continue;
         }
 
-        Console.WriteLine($"Page {j}");
-        
         HtmlWeb web = new();
         var htmlDoc = await web.LoadFromWebAsync(@$"https://fb2-epub.ru/page/{j}/");
 
@@ -64,10 +67,6 @@ async Task GetBooksFromSite()
 
         for (int i = 0; i < booksTitles.Count; i++)
         {
-            Console.WriteLine($"{booksGenres[i]}. {booksTitles[i]} - {booksAuthors[i]}");
-            Console.WriteLine(booksDescriptions[i]);
-            Console.WriteLine("Ссылка: " + booksLinks[i] + "\n");
-
             books.Add(new Book
             {
                 Title = booksTitles[i],
@@ -80,6 +79,12 @@ async Task GetBooksFromSite()
     }
 
     Print(books);
+
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("\nSuccessfully parsed.\n\nStarting the proccess of pushing data to the database...");
+    Console.ResetColor();
+    
+    return books;
 }
 
 void Print(List<Book> books)
@@ -89,3 +94,21 @@ void Print(List<Book> books)
         Console.WriteLine($"{i + 1}. {books[i].Title} - {books[i].Author}\n{books[i].Link}");
     }
 }
+
+async Task PushToDataBase(List<Book> books)
+{
+    if (books is null)
+    {
+        throw new ArgumentNullException(nameof(books), "No books were occured.");
+    }
+
+    using (ApplicationContext db = new())
+    {
+        await db.Books.AddRangeAsync(books);
+    }
+
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("\nSuccessfully pushed to the database.");
+    Console.ResetColor();
+}
+#endregion
