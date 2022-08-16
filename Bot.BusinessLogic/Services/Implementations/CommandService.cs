@@ -20,11 +20,6 @@ namespace Bot.BusinessLogic.Services.Implementations
 
                 await using (ApplicationContext db = new())
                 {
-                    // IQueryable and picks 10 random books from database
-                    //var dbBooks = db.Books
-                    //    .OrderBy(b => EF.Functions.Random())
-                    //    .Take(1);
-
                     Random rand = new Random();
                     int toSkip = rand.Next(0, db.Books.Count());
                     var dbBooks = db.Books.Skip(toSkip).Take(1).First();
