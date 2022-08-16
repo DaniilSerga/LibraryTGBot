@@ -58,3 +58,7 @@ C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\obj\Debug\net6.0\refint\TgBook
 C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\obj\Debug\net6.0\TgBooksBot.pdb
 C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\obj\Debug\net6.0\TgBooksBot.genruntimeconfig.cache
 C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\obj\Debug\net6.0\ref\TgBooksBot.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.BusinessLogic.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.Model.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.BusinessLogic.pdb
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.Model.pdb

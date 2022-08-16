@@ -18,5 +18,7 @@ namespace Bot.Model.DatabaseModels
         public string Author { get; set; } = "";
 
         public string Genre { get; set; } = "";
+
+        public string PictureLink { get; set; } = "";
     }
 }

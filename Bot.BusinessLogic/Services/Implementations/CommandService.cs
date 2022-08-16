@@ -7,22 +7,30 @@ namespace Bot.BusinessLogic.Services.Implementations
 {
     public class CommandService : ICommandService
     {
-        // Randomly gets 10 books out of the database
-        public async Task<List<Book>> GetRandomBooksAsync()
+        // Randomly gets book out of the database
+        public async Task<List<Book>> GetRandomBookAsync()
         {
             List<Book> books = new();
 
             try
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("taking random book...");
+                Console.ResetColor();
+
                 await using (ApplicationContext db = new())
                 {
                     // IQueryable and picks 10 random books from database
-                    var dbBooks = db.Books
-                        .OrderBy(b => EF.Functions.Random())
-                        .Take(3);
+                    //var dbBooks = db.Books
+                    //    .OrderBy(b => EF.Functions.Random())
+                    //    .Take(1);
+
+                    Random rand = new Random();
+                    int toSkip = rand.Next(0, db.Books.Count());
+                    var dbBooks = db.Books.Skip(toSkip).Take(1).First();
 
                     // INumerable
-                    books.AddRange(dbBooks.ToList());
+                    books.Add(dbBooks);
                 }
             }
             catch (Exception ex)
@@ -33,19 +41,19 @@ namespace Bot.BusinessLogic.Services.Implementations
             return books;
         }
 
-        // Randomly gets 10 books depending on chosen genre
+        // Randomly gets 3 books depending on chosen genre
         public async Task<List<Book>> GetBooksByGenreAsync(string genreName)
         {
             List<Book> books = new();
 
             try
             {
-                using (ApplicationContext db = new())
+                await using (ApplicationContext db = new())
                 {
                     // IQueryable - takes 3 random depending on chosen genre
                     var dbBooks = db.Books
                         .OrderBy(b => EF.Functions.Random())
-                        .Where(b => b.Genre.Name == genreName)
+                        .Where(b => b.Genre == genreName)
                         .Take(3);
 
                     // INumerable

@@ -655,6 +655,35 @@
         "runtime": {
           "lib/netcoreapp3.1/Telegram.Bot.dll": {}
         }
+      },
+      "Bot.BusinessLogic/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Bot.Model": "1.0.0",
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.8",
+          "Telegram.Bot": "18.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Bot.BusinessLogic.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Bot.BusinessLogic.dll": {}
+        }
+      },
+      "Bot.Model/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.SqlServer": "6.0.8",
+          "Telegram.Bot": "18.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Bot.Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Bot.Model.dll": {}
+        }
       }
     }
   },
@@ -1924,10 +1953,22 @@
         "telegram.bot.18.0.0.nupkg.sha512",
         "telegram.bot.nuspec"
       ]
+    },
+    "Bot.BusinessLogic/1.0.0": {
+      "type": "project",
+      "path": "../Bot.BusinessLogic/Bot.BusinessLogic.csproj",
+      "msbuildProject": "../Bot.BusinessLogic/Bot.BusinessLogic.csproj"
+    },
+    "Bot.Model/1.0.0": {
+      "type": "project",
+      "path": "../Bot.Model/Bot.Model.csproj",
+      "msbuildProject": "../Bot.Model/Bot.Model.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Bot.BusinessLogic >= 1.0.0",
+      "Microsoft.EntityFrameworkCore.Design >= 6.0.8",
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.8",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.8",
       "Telegram.Bot >= 18.0.0"
@@ -1959,7 +2000,11 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Supre\\source\\repos\\TgBooksBot\\Bot.BusinessLogic\\Bot.BusinessLogic.csproj": {
+              "projectPath": "C:\\Users\\Supre\\source\\repos\\TgBooksBot\\Bot.BusinessLogic\\Bot.BusinessLogic.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -1972,6 +2017,12 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Microsoft.EntityFrameworkCore.Design": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[6.0.8, )"
+          },
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[6.0.8, )"

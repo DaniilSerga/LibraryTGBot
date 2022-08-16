@@ -1,0 +1,17 @@
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.csproj.AssemblyReference.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.AssemblyInfoInputs.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.AssemblyInfo.cs
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.csproj.CoreCompileInputs.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\bin\Debug\net6.0\Bot.BusinessLogic.deps.json
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\bin\Debug\net6.0\Bot.BusinessLogic.runtimeconfig.json
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\bin\Debug\net6.0\Bot.BusinessLogic.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\bin\Debug\net6.0\Bot.BusinessLogic.pdb
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\bin\Debug\net6.0\Bot.Model.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\bin\Debug\net6.0\Bot.Model.pdb
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.csproj.CopyComplete
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\refint\Bot.BusinessLogic.dll
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.pdb
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\Bot.BusinessLogic.genruntimeconfig.cache
+C:\Users\Supre\source\repos\TgBooksBot\Bot.BusinessLogic\obj\Debug\net6.0\ref\Bot.BusinessLogic.dll

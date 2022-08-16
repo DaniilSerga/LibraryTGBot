@@ -32,15 +32,15 @@ async Task<List<Book>> GetBooksFromSite()
         var nodes = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'entry__title h2')]");
         var nodes_2 = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'entry__content-description')]");
         var nodes_3 = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'entry__info-wrapper')]");
-
-        // FIX BUG with href
         var nodes_4 = htmlDoc.DocumentNode.SelectNodes(".//a[contains(@class, 'entry__info-download')]");
+        var nodes_5 = htmlDoc.DocumentNode.SelectNodes(".//a[contains(@class, 'entry__content-image')]/img");
 
         List<string> booksTitles = new();
         List<string> booksAuthors = new();
         List<string> booksDescriptions = new();
         List<string> booksGenres = new();
         List<string> booksLinks = new();
+        List<string> booksPics = new();
 
         foreach (HtmlNode node in nodes)
         {
@@ -65,6 +65,12 @@ async Task<List<Book>> GetBooksFromSite()
             booksLinks.Add(node.Attributes["href"].Value);
         }
 
+        // TODO Get Picture link
+        foreach (HtmlNode node in nodes_5)
+        {
+            booksPics.Add("https://fb2-epub.ru" + node.Attributes["src"].Value);
+        }
+
         for (int i = 0; i < booksTitles.Count; i++)
         {
             books.Add(new Book
@@ -74,7 +80,8 @@ async Task<List<Book>> GetBooksFromSite()
                 Description = booksDescriptions[i],
                 Genre = booksGenres[i],
                 Link = booksLinks[i],
-            }) ;
+                PictureLink = booksPics[i]
+            });
         }
     }
 
@@ -105,6 +112,7 @@ async Task PushToDataBase(List<Book> books)
     using (ApplicationContext db = new())
     {
         await db.Books.AddRangeAsync(books);
+        await db.SaveChangesAsync();
     }
 
     Console.ForegroundColor = ConsoleColor.Red;

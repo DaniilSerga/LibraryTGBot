@@ -5,7 +5,7 @@ namespace Bot.BusinessLogic.Services.Contracts
 {
     public interface ICommandService
     {
-        Task<List<Book>> GetRandomBooksAsync();
+        Task<List<Book>> GetRandomBookAsync();
         Task<List<Book>> GetBooksByGenreAsync(string genreName);
     }
 }
