@@ -7,6 +7,31 @@ namespace Bot.BusinessLogic.Services.Implementations
 {
     public class CommandService : ICommandService
     {
+        // TODO Gets book by Id
+        public async Task<Book> GetBookAsync(int id)
+        {
+            if (id < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "Incorrect id.");
+            }
+
+            Book book = new();
+
+            try
+            {
+                using (ApplicationContext db = new())
+                {
+                    ThrowProccessConsoleMessage("Finding book by id...");
+                    book = await db.Books.FirstOrDefaultAsync(b => b.Id == id);
+                }
+            }
+            catch (Exception ex)
+            {
+                ThrowErrorConsoleMessage(ex.Message);
+            }
+
+            return book;
+        }
         // Randomly gets book out of the database
         public async Task<List<Book>> GetRandomBookAsync()
         {
@@ -61,6 +86,32 @@ namespace Bot.BusinessLogic.Services.Implementations
             }
 
             return books;
+        }
+
+        //TODO
+        public async Task<List<Book>> GetBooksByAuthorAsync(string author)
+        {
+            throw new NotImplementedException();
+        }
+
+        //TODO
+        public async Task<List<Book>> GetBooksByTitleAsync(string title)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ThrowErrorConsoleMessage(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n{message}");
+            Console.ResetColor();
+        }
+
+        private void ThrowProccessConsoleMessage(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n{message}");
+            Console.ResetColor();
         }
     }
 }
