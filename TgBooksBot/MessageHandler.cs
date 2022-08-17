@@ -60,11 +60,13 @@ namespace TgBooksBot
                         parseMode: ParseMode.Markdown,
                         replyMarkup: searchReplyKeyBoardMarkup);
                     break;
+
                 case "Главное меню":
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",
                         replyMarkup: startupReplyKeyboardMarkup);
                     break;
+
                 default:
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Неизвестная команда, повторите попытку:");
