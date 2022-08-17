@@ -13,7 +13,7 @@ namespace TgBooksBot
 
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
         {
-            new KeyboardButton[] {"Хочу почитать!"}
+            new KeyboardButton[] {"Хочу книгу!", "Поиск"}
         })
         {
             ResizeKeyboard = true,
@@ -52,17 +52,12 @@ namespace TgBooksBot
                     text: "Воспользуйтесь меню, чтобы я прислал вам книгу", replyMarkup: replyKeyboardMarkup);
                     break;
 
-                case "Хочу почитать!":
+                case "Хочу книгу!":
                     foreach (var book in await commandService.GetRandomBookAsync())
                     {
-                        //await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-
-                        //    text: $"{book.Author} - {book.Title}\n\nЖанр: {book.Genre}\n\n{book.Description}",
-                        //    replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl("Прочитать онлайн",
-                        //    book.Link)));
                         await botClient.SendPhotoAsync(chatId: update.Message.Chat.Id,
                             photo: book.PictureLink,
-                            caption: $"{book.Author} - {book.Title}\n\nЖанр: {book.Genre}\n\n{book.Description}",
+                            caption: $"*{book.Title}*\n\n*АВТОР:* _{book.Author}_\n*ЖАНР:* _{book.Genre}_\n\n*ОПИСАНИЕ*\n{book.Description}",
                             parseMode: ParseMode.Markdown,
                             replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link)));
                     }
