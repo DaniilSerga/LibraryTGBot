@@ -61,6 +61,10 @@ namespace TgBooksBot
                         replyMarkup: searchReplyKeyBoardMarkup);
                     break;
 
+                case "Жанр":
+                    var books = await commandService.GetBooksByGenreAsync(update.Message.Text);
+                    //TODO Implement get books by genre method in switch-case section
+                    break;
                 case "Главное меню":
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",

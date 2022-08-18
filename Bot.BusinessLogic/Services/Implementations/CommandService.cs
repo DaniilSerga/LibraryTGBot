@@ -71,13 +71,13 @@ namespace Bot.BusinessLogic.Services.Implementations
                 await using (ApplicationContext db = new())
                 {
                     // IQueryable - takes 3 random depending on chosen genre
-                    var dbBooks = db.Books
-                        .OrderBy(b => EF.Functions.Random())
-                        .Where(b => b.Genre == genreName)
-                        .Take(3);
+                    //var dbBooks = db.Books
+                    //    .OrderBy(b => EF.Functions.Random())
+                    //    .Where(b => b.Genre == genreName)
+                    //    .Take(3);
 
                     // INumerable
-                    books.AddRange(dbBooks.ToList());
+                    //books.AddRange(dbBooks.ToList());
                 }
             }
             catch (Exception ex)

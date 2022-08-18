@@ -2,13 +2,16 @@
 using System;
 using Bot.Model.DatabaseModels;
 using Bot.Model;
+using Telegram.Bot.Types;
 
-List<Book> books = await Task.Run(GetBooksFromSite);
+await Task.Run(GetBooksFromSite);
 
-await PushToDataBase(books);
+Console.ForegroundColor = ConsoleColor.Red;
+Console.WriteLine("\nSuccessfully pushed to the database.");
+Console.ResetColor();
 
 #region Methods
-async Task<List<Book>> GetBooksFromSite()
+async Task GetBooksFromSite()
 {
     Console.WriteLine("Loading...");
 
@@ -16,10 +19,9 @@ async Task<List<Book>> GetBooksFromSite()
 
     // TODO There's a bug which is about books named in english and somehow about books which contain '...' in their title
     // and I don't have enough time to fix this, so I'm going to
-    // leave this the way it is and parse only a hundred books in my database.
+    // leave this the way it is.
     // Also there's a problem with reading all the pages, so I put everything in a loop.
-    // But anyway there're a hundred books......
-    for (int j = 32; j <= 100; j++)
+    for (int j = 2; j < 30; j++)
     {
         HtmlWeb web = new();
         var htmlDoc = await web.LoadFromWebAsync(@$"https://fb2-epub.ru/page/{j}/");
@@ -33,21 +35,22 @@ async Task<List<Book>> GetBooksFromSite()
             var nodes_5 = htmlDoc.DocumentNode.SelectNodes(".//a[contains(@class, 'entry__content-image')]/img");
 
             List<string> booksTitles = new();
-            List<string> booksAuthors = new();
             List<string> booksDescriptions = new();
-            List<string> booksGenres = new();
             List<string> booksLinks = new();
             List<string> booksPics = new();
 
+            List<Genre> booksGenres = new(); //node_3
+            List<Author> booksAuthors = new(); //node
+
             foreach (HtmlNode node in nodes)
             {
-                // Contains author and a title of a book
+                // TODO Contains author and a title of a book
                 string text = node.InnerText;
                 string bookTitle = text[..text.LastIndexOfAny(new char[] { '.', '?' })].Trim();
                 string bookAuthor = text[(text.LastIndexOf('.') + 1)..].Trim();
 
                 booksTitles.Add(bookTitle);
-                booksAuthors.Add(bookAuthor);
+                booksAuthors.Add(new Author { Name = bookAuthor} );
             }
             foreach (HtmlNode node in nodes_2)
             {
@@ -55,7 +58,7 @@ async Task<List<Book>> GetBooksFromSite()
             }
             foreach (HtmlNode node in nodes_3)
             {
-                booksGenres.Add(node.InnerText.Trim());
+                booksGenres.Add(new Genre { Name = node.InnerText.Trim() });
             }
             foreach (HtmlNode node in nodes_4)
             {
@@ -68,15 +71,38 @@ async Task<List<Book>> GetBooksFromSite()
 
             for (int i = 0; i < booksTitles.Count; i++)
             {
-                books.Add(new Book
+                Book book = new()
                 {
                     Title = booksTitles[i],
-                    Author = booksAuthors[i],
                     Description = booksDescriptions[i],
-                    Genre = booksGenres[i],
                     Link = booksLinks[i],
                     PictureLink = booksPics[i]
-                });
+                };
+
+                using (ApplicationContext db = new())
+                {
+                    Genre genre = db.Genres.FirstOrDefault(g => g.Name == booksGenres[i].Name);
+                    if (genre is null)
+                    {
+                        book.Genre = booksGenres[i];
+                    }
+                    else
+                    {
+                        book.GenreId = genre.Id;
+                    }
+
+                    Author author = db.Authors.FirstOrDefault(a => a.Name == booksAuthors[i].Name);
+                    if (author is null)
+                    {
+                        book.Author = booksAuthors[i];
+                    }
+                    else
+                    {
+                        book.AuthorId = author.Id;
+                    }
+                }
+
+                await PushToDataBase(book);
             }
         }
         catch (Exception ex)
@@ -89,12 +115,6 @@ async Task<List<Book>> GetBooksFromSite()
     }
 
     Print(books);
-
-    Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("\nSuccessfully parsed.\n\nStarting the proccess of pushing data to the database...");
-    Console.ResetColor();
-    
-    return books;
 }
 
 void Print(List<Book> books)
@@ -105,7 +125,7 @@ void Print(List<Book> books)
     }
 }
 
-async Task PushToDataBase(List<Book> books)
+async Task PushToDataBase(Book books)
 {
     if (books is null)
     {
@@ -114,12 +134,8 @@ async Task PushToDataBase(List<Book> books)
 
     using (ApplicationContext db = new())
     {
-        await db.Books.AddRangeAsync(books);
+        await db.Books.AddAsync(books);
         await db.SaveChangesAsync();
     }
-
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.WriteLine("\nSuccessfully pushed to the database.");
-    Console.ResetColor();
 }
 #endregion
