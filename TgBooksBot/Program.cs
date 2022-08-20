@@ -25,6 +25,7 @@ bot.StartReceiving(
     receiverOptions,
     cancellationToken
 );
+
 Console.ReadLine();
 #endregion
 
@@ -32,8 +33,8 @@ static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
 {
     Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(update));
 
-    MessageHandler a = new();
-    await a.ManageMessage(botClient, update);
+    MessageHandler messageHandler = new();
+    await messageHandler.ManageMessage(botClient, update);
 }
 
 static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)

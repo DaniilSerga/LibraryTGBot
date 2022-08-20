@@ -32,6 +32,7 @@ namespace Bot.BusinessLogic.Services.Implementations
 
             return book;
         }
+
         // Randomly gets book out of the database
         public async Task<List<Book>> GetRandomBookAsync()
         {
@@ -43,13 +44,17 @@ namespace Bot.BusinessLogic.Services.Implementations
                 Console.WriteLine("taking random book...");
                 Console.ResetColor();
 
-                await using (ApplicationContext db = new())
+                using (ApplicationContext db = new())
                 {
                     Random rand = new Random();
                     int toSkip = rand.Next(0, db.Books.Count());
-                    var dbBooks = db.Books.Skip(toSkip).Take(1).First();
+                    var dbBooks = await db.Books.Skip(toSkip)
+                        .Take(1)
+                        .Include(b => b.Genre)
+                        .Include(b => b.Author)
+                        .FirstAsync();
 
-                    // INumerable
+                    // IEnumerable
                     books.Add(dbBooks);
                 }
             }
@@ -70,14 +75,17 @@ namespace Bot.BusinessLogic.Services.Implementations
             {
                 await using (ApplicationContext db = new())
                 {
-                    // IQueryable - takes 3 random depending on chosen genre
-                    //var dbBooks = db.Books
-                    //    .OrderBy(b => EF.Functions.Random())
-                    //    .Where(b => b.Genre == genreName)
-                    //    .Take(3);
+                    Random rand = new Random();
 
-                    // INumerable
-                    //books.AddRange(dbBooks.ToList());
+                    var dbBooks = db.Books
+                        .Include(b => b.Genre)
+                        .Include(b => b.Author)
+                        .Where(b => b.Genre.Name == genreName)
+                        .ToList();
+
+                    int toSkip = rand.Next(0, dbBooks.Count() - 1);
+
+                    books.Add(dbBooks[toSkip]);
                 }
             }
             catch (Exception ex)
@@ -88,18 +96,26 @@ namespace Bot.BusinessLogic.Services.Implementations
             return books;
         }
 
-        //TODO
+        //TODO Implement Sorting by Author
         public async Task<List<Book>> GetBooksByAuthorAsync(string author)
         {
             throw new NotImplementedException();
         }
 
-        //TODO
+        //TODO Implement Sorting by Title
         public async Task<List<Book>> GetBooksByTitleAsync(string title)
         {
             throw new NotImplementedException();
         }
 
+        // Gets all genres from database
+        public async Task<List<Genre>> GetGenresAsync()
+        {
+            using (ApplicationContext db = new())
+            {
+                return await db.Genres.ToListAsync();
+            }
+        }
         private void ThrowErrorConsoleMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;

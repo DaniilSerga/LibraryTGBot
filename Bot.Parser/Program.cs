@@ -17,11 +17,7 @@ async Task GetBooksFromSite()
 
     List<Book> books = new();
 
-    // TODO There's a bug which is about books named in english and somehow about books which contain '...' in their title
-    // and I don't have enough time to fix this, so I'm going to
-    // leave this the way it is.
-    // Also there's a problem with reading all the pages, so I put everything in a loop.
-    for (int j = 2; j < 30; j++)
+    for (int j = 61; j < 100; j++)
     {
         HtmlWeb web = new();
         var htmlDoc = await web.LoadFromWebAsync(@$"https://fb2-epub.ru/page/{j}/");
@@ -44,7 +40,6 @@ async Task GetBooksFromSite()
 
             foreach (HtmlNode node in nodes)
             {
-                // TODO Contains author and a title of a book
                 string text = node.InnerText;
                 string bookTitle = text[..text.LastIndexOfAny(new char[] { '.', '?' })].Trim();
                 string bookAuthor = text[(text.LastIndexOf('.') + 1)..].Trim();
