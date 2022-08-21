@@ -17,6 +17,15 @@ namespace TgBooksBot
         public async Task ManageMessage(ITelegramBotClient botClient, Update update)
         {
             #region Message validation region
+            if (update.CallbackQuery is not null)
+            {
+                if (update.CallbackQuery.Data == "bookAlike")
+                {
+                    await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
+                        text: "book alike was acomplished");
+                }
+            }
+
             if (update.Message is null)
             {
                 throw new ArgumentNullException(nameof(update), "Message is null.");
@@ -37,6 +46,7 @@ namespace TgBooksBot
             // Вывод введённого жанра
             if (update.Message.ReplyToMessage is not null && update.Message.ReplyToMessage.Text.Contains("Выберите жанр:"))
             {
+                
                 foreach (var book in await commandService.GetBooksByGenreAsync(update.Message.Text))
                 {
                     if (book is null)
@@ -52,12 +62,14 @@ namespace TgBooksBot
                             photo: book.PictureLink,
                             caption: $"*{book.Title}*\n\n*АВТОР:* _{book.Author.Name}_\n*ЖАНР:* _{book.Genre.Name}_\n\n*ОПИСАНИЕ*\n{book.Description}...",
                             parseMode: ParseMode.Markdown,
-                            replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link)));
+                            replyMarkup: new InlineKeyboardMarkup(new[]
+                            {
+                                new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
+                            }));
 
                         await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                            text: "Пожалуйста, выберите _условие_ поиска:",
-                            parseMode: ParseMode.Markdown,
-                            replyMarkup: searchReplyKeyBoardMarkup);
+                        text: "Выберите жанр:",
+                        replyMarkup: new ForceReplyMarkup { Selective = true });
 
                         return;
                     }
@@ -85,7 +97,11 @@ namespace TgBooksBot
                             photo: book.PictureLink,
                             caption: $"*{book.Title}*\n\n*АВТОР:* _{book.Author.Name}_\n*ЖАНР:* _{book.Genre.Name}_\n\n*ОПИСАНИЕ*\n{book.Description}...",
                             parseMode: ParseMode.Markdown,
-                            replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link)));
+                            replyMarkup: new InlineKeyboardMarkup(new[]
+                            {
+                                new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
+                                new[] {InlineKeyboardButton.WithCallbackData("Найти похожую", "bookAlike")}
+                            }));
                     }
                     break;
 

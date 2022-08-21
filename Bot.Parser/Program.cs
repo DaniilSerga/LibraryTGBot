@@ -17,7 +17,7 @@ async Task GetBooksFromSite()
 
     List<Book> books = new();
 
-    for (int j = 61; j < 100; j++)
+    for (int j = 101; j < 200; j++)
     {
         HtmlWeb web = new();
         var htmlDoc = await web.LoadFromWebAsync(@$"https://fb2-epub.ru/page/{j}/");
