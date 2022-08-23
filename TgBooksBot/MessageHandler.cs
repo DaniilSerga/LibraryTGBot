@@ -12,17 +12,59 @@ namespace TgBooksBot
 {
     public class MessageHandler
     {
-        readonly CommandService commandService = new();
+        private readonly ITelegramBotClient botClient;
+        private readonly Update update;
+        private readonly CommandService commandService = new();
 
-        public async Task ManageMessage(ITelegramBotClient botClient, Update update)
+        readonly ReplyKeyboardMarkup startupReplyKeyboardMarkup = new(new[]
+        {
+            new KeyboardButton[] {"Хочу книгу!", "Поиск"}
+        })
+        {
+            ResizeKeyboard = true,
+            OneTimeKeyboard = false
+        };
+
+        readonly ReplyKeyboardMarkup searchReplyKeyBoardMarkup = new(new[]
+        {
+            new KeyboardButton[] { "Жанр", "Название", "Автор"},
+            new KeyboardButton[] { "Главное меню" }
+        })
+        {
+            ResizeKeyboard = true,
+            OneTimeKeyboard = false
+        };
+
+        public MessageHandler(ITelegramBotClient botClient, Update update)
+        {
+            this.botClient = botClient;
+            this.update = update;
+        }
+
+        public async Task ManageMessage()
         {
             #region Message validation region
             if (update.CallbackQuery is not null)
             {
-                if (update.CallbackQuery.Data == "bookAlike")
+                if (update.CallbackQuery.Data.StartsWith("bookAlike"))
+                {
+                    string query = update.CallbackQuery.Data;
+
+                    foreach (var book in await commandService.GetBooksByGenreAsync(query[(query.LastIndexOf(':') + 1)..]))
+                    {
+                        await SendBookAsync(book);
+                    }
+
+                    return;
+                }
+
+                if (update.CallbackQuery.Data == "menu")
                 {
                     await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
-                        text: "book alike was acomplished");
+                            text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",
+                            replyMarkup: startupReplyKeyboardMarkup);
+
+                    return;
                 }
             }
 
@@ -46,7 +88,7 @@ namespace TgBooksBot
             // Вывод введённого жанра
             if (update.Message.ReplyToMessage is not null && update.Message.ReplyToMessage.Text.Contains("Выберите жанр:"))
             {
-                
+
                 foreach (var book in await commandService.GetBooksByGenreAsync(update.Message.Text))
                 {
                     if (book is null)
@@ -56,23 +98,14 @@ namespace TgBooksBot
                             replyMarkup: searchReplyKeyBoardMarkup);
                         return;
                     }
-                    else
-                    {
-                        await botClient.SendPhotoAsync(chatId: update.Message.Chat.Id,
-                            photo: book.PictureLink,
-                            caption: $"*{book.Title}*\n\n*АВТОР:* _{book.Author.Name}_\n*ЖАНР:* _{book.Genre.Name}_\n\n*ОПИСАНИЕ*\n{book.Description}...",
-                            parseMode: ParseMode.Markdown,
-                            replyMarkup: new InlineKeyboardMarkup(new[]
-                            {
-                                new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
-                            }));
 
-                        await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                        text: "Выберите жанр:",
-                        replyMarkup: new ForceReplyMarkup { Selective = true });
+                    await SendBookAsync(book);
 
-                        return;
-                    }
+                    await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
+                    text: "Выберите жанр:",
+                    replyMarkup: new ForceReplyMarkup { Selective = true });
+
+                    return;
                 }
             }
 
@@ -93,15 +126,7 @@ namespace TgBooksBot
                 case "Хочу книгу!":
                     foreach (var book in await commandService.GetRandomBookAsync())
                     {
-                        await botClient.SendPhotoAsync(chatId: update.Message.Chat.Id,
-                            photo: book.PictureLink,
-                            caption: $"*{book.Title}*\n\n*АВТОР:* _{book.Author.Name}_\n*ЖАНР:* _{book.Genre.Name}_\n\n*ОПИСАНИЕ*\n{book.Description}...",
-                            parseMode: ParseMode.Markdown,
-                            replyMarkup: new InlineKeyboardMarkup(new[]
-                            {
-                                new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
-                                new[] {InlineKeyboardButton.WithCallbackData("Найти похожую", "bookAlike")}
-                            }));
+                        await SendBookAsync(book);
                     }
                     break;
 
@@ -146,50 +171,24 @@ namespace TgBooksBot
             }
         }
 
-        readonly ReplyKeyboardMarkup startupReplyKeyboardMarkup = new(new[]
+        private async Task SendBookAsync(Book book)
         {
-            new KeyboardButton[] {"Хочу книгу!", "Поиск"}
-        })
-        {
-            ResizeKeyboard = true,
-            OneTimeKeyboard = false
-        };
-
-        readonly ReplyKeyboardMarkup searchReplyKeyBoardMarkup = new(new[]
-        {
-            new KeyboardButton[] { "Жанр", "Название", "Автор"},
-            new KeyboardButton[] { "Главное меню" }
-        })
-        {
-            ResizeKeyboard = true,
-            OneTimeKeyboard = false
-        };
-
-        //readonly InlineKeyboardMarkup genresInlineKeyboard = GetGenresButtons().Result;
-        private async Task<List<List<InlineKeyboardButton>>> GetGenresButtons()
-        {
-            List<List<InlineKeyboardButton>> inlineButtons = new();
-
-            var genres = await commandService.GetGenresAsync();
-
-            for (int i = 0; i < genres.Count; i++)
+            if (book is null)
             {
-                inlineButtons.Add(new List<InlineKeyboardButton>());
-
-                for (int j = 0; j < 3; j++)
-                {
-                    inlineButtons[i].Add(InlineKeyboardButton.WithCallbackData(genres[i].Name, $"/{genres[i].Name}"));
-                }
+                throw new ArgumentNullException(nameof(book), "Nothing to send.");
             }
-            //foreach (var genre in await commandService.GetGenresAsync())
-            //{
-            //    inlineButtons.Add(new List<InlineKeyboardButton>()
-            //    {
-            //    InlineKeyboardButton.WithCallbackData(genre.Name)
-            //    });
-            //}
 
-            return inlineButtons;
+            long chatId = update.Message is null ? update.CallbackQuery.Message.Chat.Id : update.Message.Chat.Id;
+
+            await botClient.SendPhotoAsync(chatId: chatId,
+                            photo: book.PictureLink,
+                            caption: $"*{book.Title}*\n\n*АВТОР:* _{book.Author.Name}_\n*ЖАНР:* _{book.Genre.Name}_\n\n*ОПИСАНИЕ*\n{book.Description}...",
+                            parseMode: ParseMode.Markdown,
+                            replyMarkup: new InlineKeyboardMarkup(new[]
+                            {
+                                new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
+                                new[] { InlineKeyboardButton.WithCallbackData("Меню", "menu"), InlineKeyboardButton.WithCallbackData("Похожая", $"bookAlike:{book.Genre.Name}") },
+                            }));
         }
     }
 }
