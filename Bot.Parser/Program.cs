@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 await Task.Run(GetBooksFromSite);
 
-Console.ForegroundColor = ConsoleColor.Red;
+Console.ForegroundColor = ConsoleColor.Green;
 Console.WriteLine("\nSuccessfully pushed to the database.");
 Console.ResetColor();
 
@@ -17,7 +17,7 @@ async Task GetBooksFromSite()
 
     List<Book> books = new();
 
-    for (int j = 101; j < 200; j++)
+    for (int j = 201; j < 300; j++)
     {
         HtmlWeb web = new();
         var htmlDoc = await web.LoadFromWebAsync(@$"https://fb2-epub.ru/page/{j}/");
@@ -99,6 +99,10 @@ async Task GetBooksFromSite()
 
                 await PushToDataBase(book);
             }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Book was successfully added to database");
+            Console.ResetColor();
         }
         catch (Exception ex)
         {
