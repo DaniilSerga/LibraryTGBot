@@ -27,7 +27,7 @@ namespace TgBooksBot
 
         readonly ReplyKeyboardMarkup searchReplyKeyBoardMarkup = new(new[]
         {
-            new KeyboardButton[] { "Жанр", "Название", "Автор"},
+            new KeyboardButton[] { "Жанр" },
             new KeyboardButton[] { "Главное меню" }
         })
         {
@@ -124,10 +124,7 @@ namespace TgBooksBot
                     break;
 
                 case "Хочу книгу!":
-                    foreach (var book in await commandService.GetRandomBookAsync())
-                    {
-                        await SendBookAsync(book);
-                    }
+                    await SendBookAsync(await commandService.GetRandomBookAsync());
                     break;
 
                 case "Поиск":

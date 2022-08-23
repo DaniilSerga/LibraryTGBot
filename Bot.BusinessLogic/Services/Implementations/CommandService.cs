@@ -34,28 +34,24 @@ namespace Bot.BusinessLogic.Services.Implementations
         }
 
         // Randomly gets book out of the database
-        public async Task<List<Book>> GetRandomBookAsync()
+        public async Task<Book> GetRandomBookAsync()
         {
-            List<Book> books = new();
+            Book book = new();
 
             try
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("taking random book...");
-                Console.ResetColor();
+                ThrowProccessConsoleMessage("taking random book...");
 
                 using (ApplicationContext db = new())
                 {
                     Random rand = new Random();
                     int toSkip = rand.Next(0, db.Books.Count());
-                    var dbBooks = await db.Books.Skip(toSkip)
+
+                    book = await db.Books.Skip(toSkip)
                         .Take(1)
                         .Include(b => b.Genre)
                         .Include(b => b.Author)
                         .FirstAsync();
-
-                    // IEnumerable
-                    books.Add(dbBooks);
                 }
             }
             catch (Exception ex)
@@ -63,7 +59,7 @@ namespace Bot.BusinessLogic.Services.Implementations
                 Console.WriteLine(ex.Message);
             }
 
-            return books;
+            return book;
         }
 
         // Randomly gets 3 books depending on chosen genre
@@ -116,13 +112,13 @@ namespace Bot.BusinessLogic.Services.Implementations
                 return await db.Genres.ToListAsync();
             }
         }
+
         private void ThrowErrorConsoleMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"\n{message}");
             Console.ResetColor();
         }
-
         private void ThrowProccessConsoleMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Green;
