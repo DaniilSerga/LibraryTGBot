@@ -44,7 +44,7 @@ namespace Bot.BusinessLogic.Services.Implementations
 
                 using (ApplicationContext db = new())
                 {
-                    Random rand = new Random();
+                    Random rand = new();
                     int toSkip = rand.Next(0, db.Books.Count());
 
                     book = await db.Books.Skip(toSkip)

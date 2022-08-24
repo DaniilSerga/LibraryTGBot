@@ -34,7 +34,14 @@ static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
     Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(update));
 
     MessageHandler messageHandler = new(botClient, update);
-    await messageHandler.ManageMessage();
+    try
+    {
+        await messageHandler.ManageMessage();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
 }
 
 static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
