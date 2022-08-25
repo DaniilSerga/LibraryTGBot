@@ -14,7 +14,8 @@ namespace TgBooksBot
     {
         private readonly ITelegramBotClient botClient;
         private readonly Update update;
-        private readonly CommandService commandService = new();
+        private readonly BooksService bookService = new();
+        private readonly GenresService genresService = new();
 
         readonly ReplyKeyboardMarkup startupReplyKeyboardMarkup = new(new[]
         {
@@ -50,10 +51,9 @@ namespace TgBooksBot
                 {
                     string query = update.CallbackQuery.Data;
 
-                    foreach (var book in await commandService.GetBooksByGenreAsync(query[(query.LastIndexOf(':') + 1)..]))
-                    {
-                        await SendBookAsync(book);
-                    }
+                    var book = await bookService.GetRandomBookByGenreAsync(query[(query.LastIndexOf(':') + 1)..]);
+
+                    await SendBookAsync(book);
 
                     return;
                 }
@@ -88,25 +88,23 @@ namespace TgBooksBot
             // Вывод введённого жанра
             if (update.Message.ReplyToMessage is not null && update.Message.ReplyToMessage.Text.Contains("Выберите жанр:"))
             {
+                var book = await bookService.GetRandomBookByGenreAsync(update.Message.Text);
 
-                foreach (var book in await commandService.GetBooksByGenreAsync(update.Message.Text))
+                if (book is null)
                 {
-                    if (book is null)
-                    {
-                        await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                            text: "Жанр не найден",
-                            replyMarkup: searchReplyKeyBoardMarkup);
-                        return;
-                    }
-
-                    await SendBookAsync(book);
-
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                    text: "Выберите жанр:",
-                    replyMarkup: new ForceReplyMarkup { Selective = true });
-
+                        text: "Жанр не найден",
+                        replyMarkup: searchReplyKeyBoardMarkup);
                     return;
                 }
+
+                await SendBookAsync(book);
+
+                await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
+                        text: "Выберите жанр:",
+                        replyMarkup: new ForceReplyMarkup { Selective = true });
+
+                return;
             }
 
             string userMessage = update.Message.Text;
@@ -116,7 +114,7 @@ namespace TgBooksBot
                 case "/start":
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                             text: "Здравствуйте, я - бот, который поможет вам определиться с тем, какую книгу почитать.\n" +
-                            "Я был бы очень рад, если бы вы поделились мной со своими знакомыми :)",
+                            "\nЯ был бы очень рад, если бы вы поделились мной со своими знакомыми :)",
                             replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithSwitchInlineQuery("Поделитесь нашим ботом")));
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                             text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",
@@ -124,7 +122,7 @@ namespace TgBooksBot
                     break;
 
                 case "Хочу книгу!":
-                    await SendBookAsync(await commandService.GetRandomBookAsync());
+                    await SendBookAsync(await bookService.GetRandomBookAsync());
                     break;
 
                 case "Поиск":
@@ -136,7 +134,7 @@ namespace TgBooksBot
 
                 // Выборка по жанру
                 case "Жанр":
-                    var genres = await commandService.GetGenresAsync();
+                    var genres = await genresService.GetAll();
 
                     StringBuilder gnrs = new();
 
@@ -146,7 +144,7 @@ namespace TgBooksBot
                     }
 
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                        text: $"Список доступных жанров: {gnrs}\n(Нажмите на жанр, чтобы скопировать его)",
+                        text: $"Список доступных жанров:\n {gnrs}\n(Нажмите на жанр, чтобы скопировать его)",
                         parseMode: ParseMode.Markdown);
 
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,

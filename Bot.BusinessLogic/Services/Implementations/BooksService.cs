@@ -124,7 +124,7 @@ namespace Bot.BusinessLogic.Services.Implementations
             PrintProccessMessage("The book's data was saved successfully!");
         }
 
-        public async Task<Book> GetRandomBook()
+        public async Task<Book> GetRandomBookAsync()
         {
             PrintProccessMessage("Taking a random book from the database.");
 
@@ -153,7 +153,7 @@ namespace Bot.BusinessLogic.Services.Implementations
             return book;
         }
 
-        public async Task<Book> GetRandomBookByGenre(string genreName)
+        public async Task<Book> GetRandomBookByGenreAsync(string genreName)
         {
             Book book = new();
 

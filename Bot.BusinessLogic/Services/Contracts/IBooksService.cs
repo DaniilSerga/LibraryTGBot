@@ -11,7 +11,7 @@ namespace Bot.BusinessLogic.Services.Contracts
         Task DeleteBook(int id);
         #endregion
 
-        Task<Book> GetRandomBook();
-        Task<Book> GetRandomBookByGenre(string genreName);
+        Task<Book> GetRandomBookAsync();
+        Task<Book> GetRandomBookByGenreAsync(string genreName);
     }
 }

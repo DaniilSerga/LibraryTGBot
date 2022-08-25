@@ -1,10 +1,9 @@
 {
   "version": 2,
-  "dgSpecHash": "qJw+84YDMGj5/K8z+XV04ESEVWEixgdMeUOVOzLo6g8hXdU4hUbpqjMV9sbeIQMN9fshgkRQvT53J+/8HtYZ+Q==",
+  "dgSpecHash": "0ygVkAmB/mJVQochXdcoCYl4SWpcoIuUE+oUtueqBKHng7vs9//vd4aTkkujneCm2+f5bQ7dzMRya+AOAsSCIg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Supre\\source\\repos\\TgBooksBot\\Bot.Parser\\Bot.Parser.csproj",
+  "projectFilePath": "C:\\Users\\Supre\\source\\repos\\TgBooksBot\\TgBooksBot\\TgBooksBot.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Supre\\.nuget\\packages\\htmlagilitypack\\1.11.43\\htmlagilitypack.1.11.43.nupkg.sha512",
     "C:\\Users\\Supre\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Supre\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\Supre\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
