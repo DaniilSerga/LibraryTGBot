@@ -4,7 +4,7 @@ using Bot.Model;
 
 namespace Bot.BusinessLogic.Services.Implementations
 {
-    public class UserShelves : IUsersShelves
+    public class UsersService : IUsersShelves
     {
         public async Task<UserBook> Get(int id)
         {

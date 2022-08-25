@@ -23,7 +23,6 @@ namespace Bot.Model.DatabaseModels
         public int GenreId { get; set; }
         public Genre? Genre { get; set; }
 
-        public List<User> Users { get; set; } = new();
         public List<UserBook> UsersBooks { get; set; } = new();
     }
 }

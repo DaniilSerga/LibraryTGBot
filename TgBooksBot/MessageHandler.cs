@@ -16,10 +16,12 @@ namespace TgBooksBot
         private readonly Update update;
         private readonly BooksService bookService = new();
         private readonly GenresService genresService = new();
+        private readonly UsersService usersService = new();
 
         readonly ReplyKeyboardMarkup startupReplyKeyboardMarkup = new(new[]
         {
-            new KeyboardButton[] {"Хочу книгу!", "Поиск"}
+            new KeyboardButton[] { "Хочу книгу!", "Поиск" },
+            new KeyboardButton[] { "Корзина" }
         })
         {
             ResizeKeyboard = true,
@@ -44,30 +46,71 @@ namespace TgBooksBot
 
         public async Task ManageMessage()
         {
-            #region Message validation region
             if (update.CallbackQuery is not null)
             {
-                if (update.CallbackQuery.Data.StartsWith("bookAlike"))
-                {
-                    string query = update.CallbackQuery.Data;
+                Console.WriteLine("Новый callback query поток запущен!!!!!");
+                await Task.Run(() => ManageCallbackData());
+            }
+            else if (update.Message is not null)
+            {
+                Console.WriteLine("Новый text message поток запущен!!!!!");
+                await Task.Run(() => ManageTextMessage());
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH ");
+                Console.ResetColor();
+            }
+        }
 
-                    var book = await bookService.GetRandomBookByGenreAsync(query[(query.LastIndexOf(':') + 1)..]);
-
-                    await SendBookAsync(book);
-
-                    return;
-                }
-
-                if (update.CallbackQuery.Data == "menu")
-                {
-                    await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
-                            text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",
-                            replyMarkup: startupReplyKeyboardMarkup);
-
-                    return;
-                }
+        // manages user's callback data
+        private async Task ManageCallbackData()
+        {
+            if (update.CallbackQuery is null || update.CallbackQuery.Data is null || update.CallbackQuery.Message is null)
+            {
+                throw new ArgumentNullException(nameof(update), "Callback query is null.");
             }
 
+            string queryData = update.CallbackQuery.Data;
+
+            if (queryData.StartsWith("bookAlike"))
+            {
+                string query = update.CallbackQuery.Data;
+
+                // input string looks like "bookAlike:fantasy"
+                var book = await bookService.GetRandomBookByGenreAsync(query[(query.LastIndexOf(':') + 1)..]);
+
+                await SendBookAsync(book);
+
+                return;
+            }
+
+            if (queryData == "menu")
+            {
+                await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
+                        text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",
+                        replyMarkup: startupReplyKeyboardMarkup);
+
+                return;
+            }
+
+            // TODO Adding book to a basket
+            // input string must look like "addToBasket:bookId/userId"
+            if (queryData.StartsWith("addToBasket"))
+            {
+                int bookId = int.Parse(queryData[(queryData.LastIndexOf(':') + 1) .. queryData.LastIndexOf('/')]);
+                long userId = long.Parse(queryData[(queryData.LastIndexOf('/') + 1)..queryData.LastIndexOf('-')]);
+                string username = queryData[(queryData.LastIndexOf('-') + 1)..];
+                Console.WriteLine($"BookId: {bookId} --- UserId: {userId} --- Username: {username}");
+
+                //await usersService.Create(new UserBook { BookId = bookId, UserId = userId });
+            }
+        }
+
+        // Manages user's text messages
+        private async Task ManageTextMessage()
+        {
             if (update.Message is null)
             {
                 throw new ArgumentNullException(nameof(update), "Message is null.");
@@ -83,7 +126,6 @@ namespace TgBooksBot
             {
                 throw new ArgumentNullException(nameof(update), "User message's text is null.");
             }
-            #endregion
 
             // Вывод введённого жанра
             if (update.Message.ReplyToMessage is not null && update.Message.ReplyToMessage.Text.Contains("Выберите жанр:"))
@@ -149,7 +191,7 @@ namespace TgBooksBot
 
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Выберите жанр:",
-                        replyMarkup: new ForceReplyMarkup { Selective = true });
+                        replyMarkup: new ForceReplyMarkup { Selective = true, InputFieldPlaceholder = "Вставьте сюда выбранный жанр" });
 
                     break;
 
@@ -166,6 +208,7 @@ namespace TgBooksBot
             }
         }
 
+        // Send a book
         private async Task SendBookAsync(Book book)
         {
             if (book is null)
@@ -174,6 +217,7 @@ namespace TgBooksBot
             }
 
             long chatId = update.Message is null ? update.CallbackQuery.Message.Chat.Id : update.Message.Chat.Id;
+            string username = update.Message is null ? update.Message.From.Username : update.CallbackQuery.From.Username;
 
             await botClient.SendPhotoAsync(chatId: chatId,
                             photo: book.PictureLink,
@@ -183,6 +227,7 @@ namespace TgBooksBot
                             {
                                 new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
                                 new[] { InlineKeyboardButton.WithCallbackData("Меню", "menu"), InlineKeyboardButton.WithCallbackData("Похожая", $"bookAlike:{book.Genre.Name}") },
+                                new[] { InlineKeyboardButton.WithCallbackData("В архив", $"addToBasket:{book.Id}/{chatId}-{username}") }
                             }));
         }
     }

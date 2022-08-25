@@ -14,7 +14,6 @@ namespace Bot.Model.DatabaseModels
 
         public string Username { get; set; } = "";
 
-        public List<Book> Books { get; set; } = new();
         public List<UserBook> UsersBooks { get; set; } = new();
     }
 }
