@@ -2,7 +2,7 @@
 
 namespace Bot.BusinessLogic.Services.Contracts
 {
-    public interface IUsersShelves
+    public interface IUsersBooksService
     {
         Task<UserBook> Get(int id);
         Task<List<UserBook>> GetAllUserBooks(int userId);

@@ -1,23 +1,27 @@
 ﻿using Bot.BusinessLogic.Services.Contracts;
 using Bot.Model.DatabaseModels;
 using Bot.Model;
+using System.Linq;
 
 namespace Bot.BusinessLogic.Services.Implementations
 {
-    public class UsersService : IUsersShelves
+    public class UsersService : IUsersService
     {
-        public async Task<UserBook> Get(int id)
+        public async Task<User> Get(int id)
         {
-            UserBook userBook = new();
+            User user = new();
+
+            PrintProccessMessage("Getting the user from the database...");
 
             try
             {
                 using ApplicationContext db = new();
-                userBook = db.UsersBooks.FirstOrDefault(u => u.Id == id);
 
-                if (userBook is null)
+                user = db.Users.FirstOrDefault(u => u.Id == id);
+
+                if (user is null)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(id), "No such user's book was found.");
+                    throw new ArgumentOutOfRangeException(nameof(id), "No such user with provided Id was found.");
                 }
             }
             catch (Exception ex)
@@ -25,109 +29,93 @@ namespace Bot.BusinessLogic.Services.Implementations
                 PrintErrorMessage(ex.Message);
             }
 
-            return userBook;
+            PrintProccessMessage("The user was taken from the database!");
+
+            return user;
         }
 
-        public async Task<List<UserBook>> GetAllUserBooks(int userId)
+        public async Task Create(User user)
         {
-            PrintProccessMesage("Getting all books depending on user id...");
-
-            List<UserBook> userBooks = new();
+            PrintProccessMessage("Creating a new user in the database...");
 
             try
             {
+                if (user is null)
+                {
+                    throw new ArgumentNullException(nameof(user), "User is null.");
+                }
+
                 using ApplicationContext db = new();
 
-                userBooks.AddRange(db.UsersBooks.Where(u => u.UserId == userId));
-
-                if (userBooks.Count == 0 || userBooks is null)
+                if (!db.Users.Any(u => u.Username == user.Username))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(userId), "Invalid user Id.");
+                    await db.Users.AddAsync(user);
+                    await db.SaveChangesAsync();
+                }
+                else
+                {
+                    PrintProccessMessage("User already exists");
+                    return;
                 }
             }
             catch (Exception ex)
             {
                 PrintErrorMessage(ex.Message);
             }
-
-            PrintProccessMesage("All books were got!");
-
-            return userBooks;
-        }
-
-        public async Task Create(UserBook userBook)
-        {
-            try
-            {
-                if (userBook is null)
-                {
-                    throw new ArgumentNullException(nameof(userBook), "User's book is null.");
-                }
-
-                PrintProccessMesage("Adding new user's book to the database...");
-
-                using ApplicationContext db = new();
-
-                await db.UsersBooks.AddAsync(userBook);
-
-                await db.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                PrintErrorMessage(ex.Message);
-            }
-
-            PrintProccessMesage("The user's book was successfully saved!");
         }
 
         public async Task Delete(int id)
         {
+            PrintProccessMessage("Deleting user from the database...");
+
             try
             {
-                PrintProccessMesage("Deleting user's book...");
-
                 using ApplicationContext db = new();
 
-                var userBook = db.UsersBooks.FirstOrDefault(u => u.Id == id);
+                var user = db.Users.FirstOrDefault(u => u.Id == id);
 
-                if (userBook is null)
+                if (user is null)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(id), "No such user's book was found.");
+                    throw new ArgumentOutOfRangeException(nameof(id), "No such user with provided Id was found.");
                 }
 
-                db.UsersBooks.Remove(userBook);
+                db.Users.Remove(user);
 
                 await db.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 PrintErrorMessage(ex.Message);
             }
 
-            PrintProccessMesage("User's book was successfully deleted!");
+            PrintProccessMessage("User was successfully deleted from the database.");
         }
 
-        public async Task Update(UserBook userBook, int id)
+        public async Task Update(User user, int id)
         {
             try
             {
-                if (userBook is null)
+                if (user is null)
                 {
-                    throw new ArgumentNullException(nameof(userBook), "User's book was null.");
+                    throw new ArgumentNullException(nameof(user), "User was null.");
                 }
+
+                PrintProccessMessage("Updating user's info.");
 
                 using ApplicationContext db = new();
 
-                var dbUserBook = db.UsersBooks.FirstOrDefault(u => u.Id == id);
+                var dbUser = db.Users.FirstOrDefault(u => u.Id == id);
 
-                if (dbUserBook is null)
+                if (dbUser is null)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(id), "No such user's book with provided Id was found.");
+                    throw new ArgumentOutOfRangeException(nameof(id), "No such user with provided Id was found.");
                 }
 
-                dbUserBook = userBook;
+                dbUser = user;
 
                 await db.SaveChangesAsync();
+
+                PrintProccessMessage("User's info was successfully updated.");
             }
             catch (Exception ex)
             {
@@ -139,13 +127,13 @@ namespace Bot.BusinessLogic.Services.Implementations
         private static void PrintErrorMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{message}\n");
+            Console.WriteLine($"\n{message}");
             Console.ResetColor();
         }
-        private static void PrintProccessMesage(string message)
+        private static void PrintProccessMessage(string message)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n{message}\n");
+            Console.WriteLine($"\n{message}");
             Console.ResetColor();
         }
         #endregion

@@ -16,6 +16,7 @@ namespace Bot.Model.DatabaseModels
         public int BookId { get; set; }
         public Book? Book { get; set; }
 
+        [Column(TypeName = "datetime")]
         public DateTime Date { get; set; } = DateTime.Now;
     }
 }

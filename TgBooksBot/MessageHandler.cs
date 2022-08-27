@@ -16,7 +16,7 @@ namespace TgBooksBot
         private readonly Update update;
         private readonly BooksService bookService = new();
         private readonly GenresService genresService = new();
-        private readonly UsersService usersService = new();
+        private readonly UsersBooksService usersService = new();
 
         readonly ReplyKeyboardMarkup startupReplyKeyboardMarkup = new(new[]
         {
@@ -96,15 +96,18 @@ namespace TgBooksBot
             }
 
             // TODO Adding book to a basket
-            // input string must look like "addToBasket:bookId/userId"
+            // input string must look like "addToBasket:bookId/userId-username"
             if (queryData.StartsWith("addToBasket"))
             {
-                int bookId = int.Parse(queryData[(queryData.LastIndexOf(':') + 1) .. queryData.LastIndexOf('/')]);
+                int bookId = int.Parse(queryData[(queryData.LastIndexOf(':') + 1)..queryData.LastIndexOf('/')]);
                 long userId = long.Parse(queryData[(queryData.LastIndexOf('/') + 1)..queryData.LastIndexOf('-')]);
                 string username = queryData[(queryData.LastIndexOf('-') + 1)..];
-                Console.WriteLine($"BookId: {bookId} --- UserId: {userId} --- Username: {username}");
 
-                //await usersService.Create(new UserBook { BookId = bookId, UserId = userId });
+                await usersService.Create(new UserBook()
+                {
+                    BookId = bookId,
+                    User = new Bot.Model.DatabaseModels.User() { Username = username, UserId = userId },
+                });
             }
         }
 
@@ -217,7 +220,7 @@ namespace TgBooksBot
             }
 
             long chatId = update.Message is null ? update.CallbackQuery.Message.Chat.Id : update.Message.Chat.Id;
-            string username = update.Message is null ? update.Message.From.Username : update.CallbackQuery.From.Username;
+            string username = update.Message is null ? update.CallbackQuery.From.Username : update.Message.From.Username;
 
             await botClient.SendPhotoAsync(chatId: chatId,
                             photo: book.PictureLink,
