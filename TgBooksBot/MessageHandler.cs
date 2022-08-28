@@ -212,9 +212,20 @@ namespace TgBooksBot
 
                     break;
 
+                    // TODO SENDING ARCHIVE USER'S BOOKS
                 case "Архив":
+                    StringBuilder message = new();
 
+                    foreach (var userBook in await usersBooksService.GetAllUserBooksByTelegramId(update.Message.Chat.Id))
+                    {
+                        message.AppendLine($"{userBook.Book.Author.Name} - {userBook.Book.Title}");
+                    }
+
+                    // TODO SENDING INLINE BUTTONS WITH DELETING AND GETTING BOOKS
+                    await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
+                        text: message.ToString());
                     break;
+
                 case "Главное меню":
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",
@@ -237,6 +248,7 @@ namespace TgBooksBot
             }
 
             long chatId = update.Message is null ? update.CallbackQuery.Message.Chat.Id : update.Message.Chat.Id;
+            long userId = update.Message is null ? update.CallbackQuery.From.Id : update.Message.From.Id;
             string username = update.Message is null ? update.CallbackQuery.From.Username : update.Message.From.Username;
 
             await botClient.SendPhotoAsync(chatId: chatId,
@@ -247,7 +259,7 @@ namespace TgBooksBot
                             {
                                 new[] { InlineKeyboardButton.WithUrl("Прочитать онлайн", book.Link) },
                                 new[] { InlineKeyboardButton.WithCallbackData("Меню", "menu"), InlineKeyboardButton.WithCallbackData("Похожая", $"bookAlike:{book.Genre.Name}") },
-                                new[] { InlineKeyboardButton.WithCallbackData("В архив", $"addToBasket:{book.Id}/{chatId}-{username}") }
+                                new[] { InlineKeyboardButton.WithCallbackData("В архив", $"addToBasket:{book.Id}/{userId}-{username}") }
                             }));
         }
     }

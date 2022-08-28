@@ -1,6 +1,7 @@
 ﻿using Bot.BusinessLogic.Services.Contracts;
 using Bot.Model.DatabaseModels;
 using Bot.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bot.BusinessLogic.Services.Implementations
 {
@@ -28,7 +29,7 @@ namespace Bot.BusinessLogic.Services.Implementations
             return userBook;
         }
 
-        public async Task<List<UserBook>> GetAllUserBooks(int userId)
+        public async Task<List<UserBook>> GetAllUserBooksByTelegramId(long userId)
         {
             PrintProccessMesage("Getting all books depending on user id...");
 
@@ -38,7 +39,10 @@ namespace Bot.BusinessLogic.Services.Implementations
             {
                 using ApplicationContext db = new();
 
-                userBooks.AddRange(db.UsersBooks.Where(u => u.UserId == userId));
+                userBooks.AddRange(db.UsersBooks
+                    .Include(u => u.Book)
+                    .Include(u => u.Book.Author)
+                    .Where(u => u.User.UserId == userId));
 
                 if (userBooks.Count == 0 || userBooks is null)
                 {
