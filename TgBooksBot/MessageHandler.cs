@@ -16,12 +16,13 @@ namespace TgBooksBot
         private readonly Update update;
         private readonly BooksService bookService = new();
         private readonly GenresService genresService = new();
-        private readonly UsersBooksService usersService = new();
+        private readonly UsersService usersService = new();
+        private readonly UsersBooksService usersBooksService = new();
 
         readonly ReplyKeyboardMarkup startupReplyKeyboardMarkup = new(new[]
         {
             new KeyboardButton[] { "Хочу книгу!", "Поиск" },
-            new KeyboardButton[] { "Корзина" }
+            new KeyboardButton[] { "Архив" }
         })
         {
             ResizeKeyboard = true,
@@ -103,11 +104,24 @@ namespace TgBooksBot
                 long userId = long.Parse(queryData[(queryData.LastIndexOf('/') + 1)..queryData.LastIndexOf('-')]);
                 string username = queryData[(queryData.LastIndexOf('-') + 1)..];
 
-                await usersService.Create(new UserBook()
+                if (await usersService.UserExists(userId))
                 {
-                    BookId = bookId,
-                    User = new Bot.Model.DatabaseModels.User() { Username = username, UserId = userId },
-                });
+                    var user = usersService.GetByTelegramId(userId);
+
+                    await usersBooksService.Create(new UserBook()
+                    {
+                        BookId = bookId,
+                        UserId = user.Id
+                    });
+                }
+                else
+                {
+                    await usersBooksService.Create(new UserBook()
+                    {
+                        BookId = bookId,
+                        User = new() { Username = username, UserId = userId }
+                    });
+                }
             }
         }
 
@@ -198,6 +212,9 @@ namespace TgBooksBot
 
                     break;
 
+                case "Архив":
+
+                    break;
                 case "Главное меню":
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Воспользуйтесь меню, чтобы я прислал вам книгу:",

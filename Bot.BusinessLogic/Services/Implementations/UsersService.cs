@@ -34,6 +34,31 @@ namespace Bot.BusinessLogic.Services.Implementations
             return user;
         }
 
+        public async Task<User> GetByTelegramId(long userId)
+        {
+            User user = new();
+
+            try
+            {
+                PrintProccessMessage("Getting user by user's telegram Id...");
+
+                using ApplicationContext db = new();
+
+                user = db.Users.FirstOrDefault(u => u.UserId == userId);
+
+                if (user is null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(userId), "No such user with provided Id was found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                PrintErrorMessage(ex.Message);
+            }
+
+            return user;
+        }
+
         public async Task Create(User user)
         {
             PrintProccessMessage("Creating a new user in the database...");
@@ -121,6 +146,31 @@ namespace Bot.BusinessLogic.Services.Implementations
             {
                 PrintErrorMessage(ex.Message);
             }
+        }
+
+        public async Task<bool> UserExists(long userId)
+        {
+            bool exists = false;
+
+            try
+            {
+                using ApplicationContext db = new();
+
+                var user = db.Users.FirstOrDefault(u => u.UserId == userId);
+
+                if (user is null)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(userId), "No such user with provided Id was found.");
+                }
+
+                exists = db.Users.Any(u => u == user);
+            }
+            catch (Exception ex)
+            {
+                PrintErrorMessage(ex.Message);
+            }
+
+            return exists;
         }
 
         #region Console messages
