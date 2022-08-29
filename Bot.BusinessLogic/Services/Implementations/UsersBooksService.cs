@@ -72,6 +72,11 @@ namespace Bot.BusinessLogic.Services.Implementations
 
                 using ApplicationContext db = new();
 
+                if (db.UsersBooks.Any(u => u.User.Id == userBook.UserId && u.BookId == userBook.BookId))
+                {
+                    throw new ArgumentException("Book already exists.");
+                }
+
                 await db.UsersBooks.AddAsync(userBook);
 
                 await db.SaveChangesAsync();
@@ -139,6 +144,26 @@ namespace Bot.BusinessLogic.Services.Implementations
             }
         }
 
+        public async Task<bool> UserOwnsBook(UserBook userBook)
+        {
+            bool owns = false;
+
+            try
+            {
+                using ApplicationContext db = new();
+
+                if (db.UsersBooks.Any(u => u.User.Id == userBook.UserId && u.BookId == userBook.BookId))
+                {
+                    owns = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                PrintErrorMessage(ex.Message);
+            }
+
+            return owns;
+        }
         #region Console messages
         private static void PrintErrorMessage(string message)
         {

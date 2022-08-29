@@ -82,6 +82,9 @@ namespace TgBooksBot
                 // input string looks like "bookAlike:fantasy"
                 var book = await bookService.GetRandomBookByGenreAsync(query[(query.LastIndexOf(':') + 1)..]);
 
+                await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
+                    text: char.ConvertFromUtf32(0x1F601));
+
                 await SendBookAsync(book);
 
                 return;
@@ -96,7 +99,6 @@ namespace TgBooksBot
                 return;
             }
 
-            // TODO Adding book to a basket
             // input string must look like "addToBasket:bookId/userId-username"
             if (queryData.StartsWith("addToBasket"))
             {
@@ -106,16 +108,25 @@ namespace TgBooksBot
 
                 if (await usersService.UserExists(userId))
                 {
-                    var user = usersService.GetByTelegramId(userId);
-
-                    await usersBooksService.Create(new UserBook()
+                    var user = await usersService.GetByTelegramId(userId);
+                    UserBook userBook = new()
                     {
                         BookId = bookId,
                         UserId = user.Id
-                    });
+                    };
+
+                    if (await usersBooksService.UserOwnsBook(userBook))
+                    {
+                        await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
+                            text: "Данная книга уже в вашем архиве!");
+                        return;
+                    }
+
+                    await usersBooksService.Create(userBook);
                 }
                 else
                 {
+                    //TODO aAaAAaaAAA
                     await usersBooksService.Create(new UserBook()
                     {
                         BookId = bookId,
@@ -214,16 +225,12 @@ namespace TgBooksBot
 
                     // TODO SENDING ARCHIVE USER'S BOOKS
                 case "Архив":
-                    StringBuilder message = new();
-
+                    // TODO Перелистывание страниц + удаление из бд
                     foreach (var userBook in await usersBooksService.GetAllUserBooksByTelegramId(update.Message.Chat.Id))
                     {
-                        message.AppendLine($"{userBook.Book.Author.Name} - {userBook.Book.Title}");
+                        
                     }
-
-                    // TODO SENDING INLINE BUTTONS WITH DELETING AND GETTING BOOKS
-                    await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
-                        text: message.ToString());
+                    
                     break;
 
                 case "Главное меню":
@@ -239,7 +246,7 @@ namespace TgBooksBot
             }
         }
 
-        // Send a book
+        // Sends a book
         private async Task SendBookAsync(Book book)
         {
             if (book is null)
@@ -261,6 +268,24 @@ namespace TgBooksBot
                                 new[] { InlineKeyboardButton.WithCallbackData("Меню", "menu"), InlineKeyboardButton.WithCallbackData("Похожая", $"bookAlike:{book.Genre.Name}") },
                                 new[] { InlineKeyboardButton.WithCallbackData("В архив", $"addToBasket:{book.Id}/{userId}-{username}") }
                             }));
+        }
+
+        private async Task SendBasketBookAsync(UserBook userBook)
+        {
+            string text = $"{userBook.Book.Author.Name} - {userBook.Book.Title}";
+
+            await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
+            text: text,
+            replyMarkup: new InlineKeyboardMarkup(new[]
+            {
+                  new[] { InlineKeyboardButton.WithUrl("Прочитать", userBook.Book.Link), InlineKeyboardButton.WithCallbackData("Описание", $"basket-info:{userBook.BookId}") },
+                  new[]
+                  {
+                      InlineKeyboardButton.WithCallbackData(char.ConvertFromUtf32(0x25C0), "basket-next"),
+                      InlineKeyboardButton.WithCallbackData("Удалить", $"basket-delete:{userBook.Id}"),
+                      InlineKeyboardButton.WithCallbackData(char.ConvertFromUtf32(0x25B6), "basket-back")
+                  }
+            }));
         }
     }
 }
