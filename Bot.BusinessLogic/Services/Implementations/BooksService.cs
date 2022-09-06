@@ -18,10 +18,11 @@ namespace Bot.BusinessLogic.Services.Implementations
             {
                 using ApplicationContext db = new();
 
-                Random rand = new();
-                int toSkip = rand.Next(0, db.Books.Count());
-
-                book = await db.Books.FirstOrDefaultAsync(b => b.Id == id);
+                book = await db.Books
+                    .Include(b => b.Author)
+                    .Include(b => b.Genre)
+                    .Where(b => b.Id == id)
+                    .FirstAsync();
 
                 if (book is null)
                 {
