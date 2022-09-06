@@ -1,13 +1,10 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
-using Bot.BusinessLogic.Services;
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
-using Bot.BusinessLogic.Services.Implementations;
-using System.Collections.Generic;
+﻿using Bot.BusinessLogic.Services.Implementations;
 using Bot.Model.DatabaseModels;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TgBooksBot
 {
@@ -51,18 +48,16 @@ namespace TgBooksBot
         {
             if (update.CallbackQuery is not null)
             {
-                Console.WriteLine("Новый callback query поток запущен!!!!!");
                 await Task.Run(() => ManageCallbackData());
             }
             else if (update.Message is not null)
             {
-                Console.WriteLine("Новый text message поток запущен!!!!!");
                 await Task.Run(() => ManageTextMessage());
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH BRUH ");
+                Console.WriteLine("Error was occured while managing user's message.");
                 Console.ResetColor();
             }
         }
@@ -84,9 +79,6 @@ namespace TgBooksBot
                 // input string looks like "bookAlike:fantasy"
                 var book = await bookService.GetRandomBookByGenreAsync(query[(query.LastIndexOf(':') + 1)..]);
 
-                await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
-                    text: char.ConvertFromUtf32(0x1F601));
-
                 await SendBookAsync(book);
 
                 return;
@@ -101,7 +93,6 @@ namespace TgBooksBot
                 return;
             }
 
-            // input string must look like "addToBasket:bookId/userId-username"
             if (queryData.StartsWith("addToBasket"))
             {
                 int bookId = int.Parse(queryData[(queryData.LastIndexOf(':') + 1)..queryData.LastIndexOf('/')]);
@@ -150,6 +141,15 @@ namespace TgBooksBot
 
                 await Task.Run(() => UpdateBasketBooks(update.CallbackQuery.From.Id));
 
+                if (basketUserBooks.Count == 0)
+                {
+                    await botClient.DeleteMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId);
+
+                    await botClient.SendTextMessageAsync(chatId: update.CallbackQuery.Message.Chat.Id,
+                        text: "Ваш архив пуст.\nДобавьте книгу в свой архив, используя кнопку \"В архив\"",
+                        replyMarkup: startupReplyKeyboardMarkup);
+                }
+
                 var userBook = basketUserBooks[0];
 
                 string text = $"1) {userBook.Book.Author.Name} - {userBook.Book.Title}";
@@ -170,7 +170,6 @@ namespace TgBooksBot
 
             if (queryData.StartsWith("basket-next"))
             {
-                // TODO Next page
                 await Task.Run(() => UpdateBasketBooks(update.CallbackQuery.From.Id));
 
                 int userBookId = int.Parse(queryData[(queryData.LastIndexOf(':') + 1)..]) + 1;
@@ -200,7 +199,6 @@ namespace TgBooksBot
 
             if (queryData.StartsWith("basket-back"))
             {
-                // TODO previous page
                 await Task.Run(() => UpdateBasketBooks(update.CallbackQuery.From.Id));
 
                 int userBookId = int.Parse(queryData[(queryData.LastIndexOf(':') + 1)..]) - 1;
@@ -260,7 +258,7 @@ namespace TgBooksBot
             // Вывод введённого жанра
             if (update.Message.ReplyToMessage is not null && update.Message.ReplyToMessage.Text.Contains("Выберите жанр:"))
             {
-                var book = await bookService.GetRandomBookByGenreAsync(update.Message.Text);
+                var book = await Task.Run(() => bookService.GetRandomBookByGenreAsync(update.Message.Text));
 
                 if (book is null)
                 {
@@ -295,7 +293,9 @@ namespace TgBooksBot
                     break;
 
                 case "Хочу книгу!":
-                    await SendBookAsync(await Task.Run(() => bookService.GetRandomBookAsync()));
+                    var book = await Task.Run(() => bookService.GetRandomBookAsync());
+                    await SendBookAsync(book);
+
                     break;
 
                 case "Поиск":
@@ -318,7 +318,8 @@ namespace TgBooksBot
 
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: $"Список доступных жанров:\n {gnrs}\n(Нажмите на жанр, чтобы скопировать его)",
-                        parseMode: ParseMode.Markdown);
+                        parseMode: ParseMode.Markdown,
+                        replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithCallbackData("Меню", "menu")));
 
                     await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
                         text: "Выберите жанр:",
@@ -329,7 +330,7 @@ namespace TgBooksBot
                 case "Архив":
                     basketUserBooks = await usersBooksService.GetAllUserBooksByTelegramId(update.Message.Chat.Id);
 
-                    await Task.Run(() => SendBasketBookAsync(basketUserBooks[0]));
+                    await Task.Run(() => SendBasketBookAsync());
 
                     break;
 
@@ -370,7 +371,7 @@ namespace TgBooksBot
                             }));
         }
 
-        private async Task SendBasketBookAsync(UserBook userBook)
+        private async Task SendBasketBookAsync()
         {
             if (update.Message is not null)
             {
@@ -380,6 +381,17 @@ namespace TgBooksBot
             {
                 await UpdateBasketBooks(update.CallbackQuery.From.Id);
             }
+
+            if (basketUserBooks.Count == 0)
+            {
+                await botClient.SendTextMessageAsync(chatId: update.Message.Chat.Id,
+                        text: "Ваш архив пуст.\nДобавьте книгу в свой архив, используя кнопку \"В архив\"",
+                        replyMarkup: startupReplyKeyboardMarkup);
+
+                return;
+            }
+
+            UserBook userBook = basketUserBooks[0];
 
             string text = $"1) {userBook.Book.Author.Name} - {userBook.Book.Title}";
 

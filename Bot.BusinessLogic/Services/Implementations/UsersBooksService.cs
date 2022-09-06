@@ -1,6 +1,6 @@
 ﻿using Bot.BusinessLogic.Services.Contracts;
-using Bot.Model.DatabaseModels;
 using Bot.Model;
+using Bot.Model.DatabaseModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bot.BusinessLogic.Services.Implementations

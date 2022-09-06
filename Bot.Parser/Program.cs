@@ -1,8 +1,6 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using Bot.Model;
 using Bot.Model.DatabaseModels;
-using Bot.Model;
-using Telegram.Bot.Types;
+using HtmlAgilityPack;
 
 await Task.Run(GetBooksFromSite);
 
@@ -17,7 +15,7 @@ async Task GetBooksFromSite()
 
     List<Book> books = new();
 
-    for (int j = 201; j < 300; j++)
+    for (int j = 301; j < 600; j++)
     {
         HtmlWeb web = new();
         var htmlDoc = await web.LoadFromWebAsync(@$"https://fb2-epub.ru/page/{j}/");

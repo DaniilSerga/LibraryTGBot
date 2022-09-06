@@ -1,8 +1,7 @@
 ﻿using Bot.BusinessLogic.Services.Contracts;
-using Bot.Model.DatabaseModels;
 using Bot.Model;
+using Bot.Model.DatabaseModels;
 using Microsoft.EntityFrameworkCore;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Bot.BusinessLogic.Services.Implementations
 {

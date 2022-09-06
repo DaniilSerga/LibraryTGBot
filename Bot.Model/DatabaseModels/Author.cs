@@ -1,6 +1,5 @@
-﻿using Bot.Model.DatabaseModels;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace Bot.Model.DatabaseModels
 {

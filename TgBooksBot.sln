@@ -19,10 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Model", "Bot.Model\Bot.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot.Parser", "Bot.Parser\Bot.Parser.csproj", "{73F51C63-D253-4787-90B0-E7B3527918E4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Common", "5. Common", "{13EA3728-616A-4C3F-99D3-4A24AD6A63DA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bot.Common", "Bot.Common\Bot.Common.csproj", "{0D14D2E1-75F2-4AEB-ADB7-AC719F47FF03}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,10 +41,6 @@ Global
 		{73F51C63-D253-4787-90B0-E7B3527918E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73F51C63-D253-4787-90B0-E7B3527918E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73F51C63-D253-4787-90B0-E7B3527918E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D14D2E1-75F2-4AEB-ADB7-AC719F47FF03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D14D2E1-75F2-4AEB-ADB7-AC719F47FF03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D14D2E1-75F2-4AEB-ADB7-AC719F47FF03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D14D2E1-75F2-4AEB-ADB7-AC719F47FF03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,7 +50,6 @@ Global
 		{FBDDEF42-AB2D-4ED8-AB2B-4780A2D259F0} = {7FF2F500-E10B-4331-ABC0-28F4E66D9BC4}
 		{FEDF2E93-9B22-4419-8ABB-5DD9F528D089} = {31EE31FA-685A-4340-B55E-95E33DC89C17}
 		{73F51C63-D253-4787-90B0-E7B3527918E4} = {057960FC-D61F-4F79-96A8-AEBFC89FBF49}
-		{0D14D2E1-75F2-4AEB-ADB7-AC719F47FF03} = {13EA3728-616A-4C3F-99D3-4A24AD6A63DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6A426C1B-EBF8-4677-AFCF-206BAB18C9BF}

@@ -1,11 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
-using System.Configuration;
-using Microsoft.IdentityModel.Protocols;
-using Telegram.Bot.Types.ReplyMarkups;
-using Telegram.Bot.Types.Enums;
 using TgBooksBot;
 
 #region Bot settings

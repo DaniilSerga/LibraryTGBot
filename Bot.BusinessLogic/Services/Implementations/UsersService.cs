@@ -1,7 +1,6 @@
 ﻿using Bot.BusinessLogic.Services.Contracts;
-using Bot.Model.DatabaseModels;
 using Bot.Model;
-using System.Linq;
+using Bot.Model.DatabaseModels;
 
 namespace Bot.BusinessLogic.Services.Implementations
 {

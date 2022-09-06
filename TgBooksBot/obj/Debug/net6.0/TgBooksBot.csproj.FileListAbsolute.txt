@@ -62,3 +62,9 @@ C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.BusinessL
 C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.Model.dll
 C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.BusinessLogic.pdb
 C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Bot.Model.pdb
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Microsoft.Extensions.Configuration.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\Supre\source\repos\TgBooksBot\TgBooksBot\bin\Debug\net6.0\Microsoft.Extensions.FileSystemGlobbing.dll
